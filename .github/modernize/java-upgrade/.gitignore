@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Frontend build
+frontend/dist/
+
+# Java build
+backend/target/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
