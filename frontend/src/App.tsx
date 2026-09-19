@@ -14,6 +14,14 @@ interface User {
   linkedin: string;
 }
 
+
+interface CareerProgress {
+  id: number;
+  userId: number;
+  skill: string;
+  progress: number;
+  completed: boolean;
+}
 interface RoadmapPhase {
   phase: number;
   title: string;
@@ -41,6 +49,9 @@ function App() {
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [careerProgress, setCareerProgress] =
+    useState<CareerProgress[]>([]);
 
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -101,6 +112,21 @@ function App() {
       .catch((error) => {
         console.error(error);
         setLoading(false);
+      });
+
+    fetch("http://localhost:8080/api/progress/1")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch career progress");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setCareerProgress(data);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }, []);
 
@@ -289,7 +315,7 @@ function App() {
       <div className="app-container">
         <aside className="sidebar">
           <div className="logo">
-            <span className="logo-icon">✦</span>
+            <span className="logo-icon">&#x2726;</span>
             <span>AI CareerOS</span>
           </div>
 
@@ -615,7 +641,7 @@ function App() {
       <div className="app-container">
         <aside className="sidebar">
           <div className="logo">
-            <span className="logo-icon">✦</span>
+            <span className="logo-icon">&#x2726;</span>
             <span>AI CareerOS</span>
           </div>
 
@@ -698,7 +724,7 @@ function App() {
                       generateAIRoadmap
                     }
                   >
-                    Generate AI Roadmap →
+                    Generate AI Roadmap &#x2192;
                   </button>
                 </div>
               )}
@@ -873,7 +899,7 @@ function App() {
       <div className="app-container">
         <aside className="sidebar">
           <div className="logo">
-            <span className="logo-icon">✦</span>
+            <span className="logo-icon">&#x2726;</span>
             <span>AI CareerOS</span>
           </div>
 
@@ -882,13 +908,9 @@ function App() {
               <button
                 key={item}
                 className={`nav-item ${
-                  activePage === item
-                    ? "active"
-                    : ""
+                  activePage === item ? "active" : ""
                 }`}
-                onClick={() =>
-                  setActivePage(item)
-                }
+                onClick={() => setActivePage(item)}
               >
                 {item}
               </button>
@@ -897,24 +919,19 @@ function App() {
 
           <div className="sidebar-bottom">
             <p>AI CareerOS</p>
-            <span>
-              Career Intelligence Platform
-            </span>
+            <span>Career Intelligence Platform</span>
           </div>
         </aside>
 
         <main className="main-content">
           <header className="topbar">
             <div>
-              <p className="eyebrow">
-                AI CAREER INTELLIGENCE
-              </p>
+              <p className="eyebrow">AI CAREER INTELLIGENCE</p>
 
               <h1>AI Career Assistant</h1>
 
               <p className="subtitle">
-                Ask anything about your career,
-                skills and roadmap.
+                Ask anything about your career, skills and roadmap.
               </p>
             </div>
 
@@ -931,13 +948,9 @@ function App() {
           <section className="ai-chat-card">
             <div className="chat-header">
               <div>
-                <p className="card-label">
-                  PERSONALIZED AI
-                </p>
+                <p className="card-label">PERSONALIZED AI</p>
 
-                <h2>
-                  CareerOS Assistant
-                </h2>
+                <h2>CareerOS Assistant</h2>
               </div>
 
               {chatMessages.length > 0 && (
@@ -953,75 +966,60 @@ function App() {
             {chatMessages.length === 0 ? (
               <div className="chat-welcome">
                 <div className="ai-avatar">
-                  ✦
+                  AI
                 </div>
 
                 <h2>
-                  Hi {user.name.split(" ")[0]} 👋
+                  Hi {user.name.split(" ")[0]} &#x1F44B;
                 </h2>
 
                 <p>
                   I'm your AI career assistant.
-                  I know your target role,
-                  current skills and graduation
-                  timeline, so I can give you
-                  personalized career advice.
+                  I know your target role, current skills and graduation
+                  timeline, so I can give you personalized career advice.
                 </p>
 
                 <div className="suggested-questions">
-                  {suggestedQuestions.map(
-                    (question) => (
-                      <button
-                        key={question}
-                        onClick={() =>
-                          sendMessage(question)
-                        }
-                      >
-                        {question}
-                      </button>
-                    )
-                  )}
+                  {suggestedQuestions.map((question) => (
+                    <button
+                      key={question}
+                      onClick={() => sendMessage(question)}
+                    >
+                      {question}
+                    </button>
+                  ))}
                 </div>
               </div>
             ) : (
               <div className="chat-messages">
-                {chatMessages.map(
-                  (message, index) => (
-                    <div
-                      key={index}
-                      className={`chat-message ${
-                        message.role
-                      }`}
-                    >
-                      <div className="message-avatar">
-                        {message.role ===
-                        "assistant"
-                          ? "✦"
-                          : user.name
-                              .split(" ")
-                              .map(
-                                (word) =>
-                                  word[0]
-                              )
-                              .join("")
-                              .slice(
-                                0,
-                                2
-                              )
-                              .toUpperCase()}
-                      </div>
-
-                      <div className="message-content">
-    <ReactMarkdown>{message.content}</ReactMarkdown>
-</div>
+                {chatMessages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`chat-message ${message.role}`}
+                  >
+                    <div className="message-avatar">
+                      {message.role === "assistant"
+                        ? "AI"
+                        : user.name
+                            .split(" ")
+                            .map((word) => word[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
                     </div>
-                  )
-                )}
+
+                    <div className="message-content">
+                      <ReactMarkdown>
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                ))}
 
                 {chatLoading && (
                   <div className="chat-message assistant">
                     <div className="message-avatar">
-                      ✦
+                      AI
                     </div>
 
                     <div className="message-content typing">
@@ -1044,14 +1042,9 @@ function App() {
                 placeholder="Ask your career assistant..."
                 value={chatInput}
                 disabled={chatLoading}
-                onChange={(e) =>
-                  setChatInput(e.target.value)
-                }
+                onChange={(e) => setChatInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    !e.shiftKey
-                  ) {
+                  if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                   }
@@ -1060,33 +1053,199 @@ function App() {
 
               <button
                 className="ai-button"
-                disabled={
-                  chatLoading ||
-                  !chatInput.trim()
-                }
-                onClick={() =>
-                  sendMessage()
-                }
+                disabled={chatLoading || !chatInput.trim()}
+                onClick={() => sendMessage()}
               >
-                {chatLoading
-                  ? "Thinking..."
-                  : "Send →"}
+                {chatLoading ? "Thinking..." : "Send &#x2192;"}
               </button>
             </div>
 
             <p className="chat-disclaimer">
-              AI CareerOS uses your career profile
-              to personalize its responses.
+              AI CareerOS uses your career profile to personalize its
+              responses.
             </p>
           </section>
         </main>
       </div>
     );
   }
+  // =========================
+  // SKILLS PAGE
+  // =========================
 
+  if (activePage === "Skills") {
+    const updateSkillProgress = async (
+      id: number,
+      progress: number
+    ) => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/progress/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              progress,
+              completed: progress >= 100,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to update skill progress");
+        }
+
+        const updatedSkill = await response.json();
+
+        setCareerProgress((current) =>
+          current.map((item) =>
+            item.id === id ? updatedSkill : item
+          )
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    return (
+      <div className="app-container">
+        <aside className="sidebar">
+          <div className="logo">
+            <span className="logo-icon">&#x2726;</span>
+            <span>CareerOS</span>
+          </div>
+
+          <nav>
+            {menuItems.map((item) => (
+              <button
+                key={item}
+                className={`nav-item ${
+                  activePage === item ? "active" : ""
+                }`}
+                onClick={() => setActivePage(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        <main className="main-content">
+          <div className="page-header">
+            <div>
+              <p className="card-label">
+                SKILLS
+              </p>
+
+              <h1>
+                Your Skills
+              </h1>
+
+              <p>
+                Track and update your progress toward your target role.
+              </p>
+            </div>
+          </div>
+
+          <section className="dashboard-grid">
+            {careerProgress.length > 0 ? (
+              careerProgress.map((item) => (
+                <div
+                  className="dashboard-card"
+                  key={item.id}
+                >
+                  <div className="card-header">
+                    <div>
+                      <p className="card-label">
+                        SKILL
+                      </p>
+
+                      <h2>
+                        {item.skill}
+                      </h2>
+                    </div>
+
+                    <strong>
+                      {item.progress}%
+                    </strong>
+                  </div>
+
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={item.progress}
+                    onChange={(event) =>
+                      updateSkillProgress(
+                        item.id,
+                        Number(event.target.value)
+                      )
+                    }
+                    style={{
+                      width: "100%",
+                      marginTop: "20px",
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "10px",
+                      background: "#e5e7eb",
+                      borderRadius: "999px",
+                      overflow: "hidden",
+                      marginTop: "15px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${item.progress}%`,
+                        height: "100%",
+                        background: "#111827",
+                        borderRadius: "999px",
+                        transition: "width 0.2s ease",
+                      }}
+                    />
+                  </div>
+
+                  <p>
+                    {item.completed
+                      ? "Completed"
+                      : `${item.progress}% completed`}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <div className="dashboard-card">
+                <h2>
+                  No skill progress found
+                </h2>
+
+                <p>
+                  Add your skill progress to start tracking your career journey.
+                </p>
+              </div>
+            )}
+          </section>
+        </main>
+      </div>
+    );
+  }
   // =========================
   // DASHBOARD
   // =========================
+
+  const overallProgress =
+    careerProgress.length > 0
+      ? Math.round(
+          careerProgress.reduce(
+            (total, item) => total + item.progress,
+            0
+          ) / careerProgress.length
+        )
+      : 0;
 
   const skillCount = user.skills
     ? user.skills
@@ -1100,7 +1259,7 @@ function App() {
     <div className="app-container">
       <aside className="sidebar">
         <div className="logo">
-          <span className="logo-icon">✦</span>
+          <span className="logo-icon">&#x2726;</span>
           <span>AI CareerOS</span>
         </div>
 
@@ -1138,7 +1297,7 @@ function App() {
             </p>
 
             <h1>
-              Welcome back, {user.name} 👋
+              Welcome back, {user.name} &#x1F44B;
             </h1>
 
             <p className="subtitle">
@@ -1195,10 +1354,10 @@ function App() {
           <div className="stat-card">
             <span>Career Progress</span>
 
-            <strong>10%</strong>
+            <strong>{overallProgress}%</strong>
 
             <small>
-              Keep building 🚀
+              Keep building &#x1F680;
             </small>
           </div>
         </section>
@@ -1282,7 +1441,7 @@ function App() {
                     )
                   }
                 >
-                  Generate Roadmap →
+                  Generate Roadmap &#x2192;
                 </button>
               </div>
             )}
@@ -1361,7 +1520,7 @@ function App() {
               )
             }
           >
-            Open AI Assistant →
+            Open AI Assistant &#x2192;
           </button>
         </section>
       </main>
