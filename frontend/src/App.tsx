@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+const API_URL = import.meta.env.VITE_API_URL;
 import "./App.css";
 
 interface User {
@@ -97,7 +98,7 @@ function App() {
   // =========================
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/users/1")
+    fetch(API_URL + "/api/users/1")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch user");
@@ -114,7 +115,7 @@ function App() {
         setLoading(false);
       });
 
-    fetch("http://localhost:8080/api/progress/1")
+    fetch(API_URL + "/api/progress/1")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch career progress");
@@ -152,7 +153,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/ai/roadmap/1",
+        API_URL + "/api/ai/roadmap/1",
         {
           method: "POST",
         }
@@ -209,7 +210,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/ai/chat/1",
+        API_URL + "/api/ai/chat/1",
         {
           method: "POST",
           headers: {
@@ -280,7 +281,7 @@ function App() {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/api/users/1",
+          API_URL + "/api/users/1",
           {
             method: "PUT",
             headers: {
@@ -1080,7 +1081,7 @@ function App() {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/progress/${id}`,
+          API_URL + "/api/progress/${id}",
           {
             method: "PUT",
             headers: {
