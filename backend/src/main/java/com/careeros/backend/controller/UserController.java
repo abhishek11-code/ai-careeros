@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://ai-careeros-sigma.vercel.app"})
 public class UserController {
 
     private final UserService userService;
@@ -42,3 +42,4 @@ public class UserController {
         userService.deleteUser(id);
     }
 }
+

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://ai-careeros-sigma.vercel.app"})
 public class HealthController {
 
     @GetMapping("/api/health")
@@ -13,3 +13,4 @@ public class HealthController {
         return "AI CareerOS backend is running!";
     }
 }
+

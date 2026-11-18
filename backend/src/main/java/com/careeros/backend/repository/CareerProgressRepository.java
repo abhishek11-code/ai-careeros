@@ -10,3 +10,4 @@ public interface CareerProgressRepository
 
     List<CareerProgress> findByUserId(Long userId);
 }
+

@@ -57,3 +57,4 @@ public class CareerProgress {
         this.completed = completed;
     }
 }
+

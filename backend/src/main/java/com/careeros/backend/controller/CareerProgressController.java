@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/progress")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://ai-careeros-sigma.vercel.app"})
 public class CareerProgressController {
 
     private final CareerProgressService careerProgressService;
@@ -40,3 +40,5 @@ public class CareerProgressController {
         careerProgressService.deleteProgress(id);
     }
 }
+
+

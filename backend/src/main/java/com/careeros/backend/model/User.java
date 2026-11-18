@@ -90,3 +90,4 @@ public class User {
         this.linkedin = linkedin;
     }
 }
+

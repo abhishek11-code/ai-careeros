@@ -44,3 +44,5 @@ public class CareerProgressService {
         careerProgressRepository.deleteById(id);
     }
 }
+
+
