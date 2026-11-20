@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 const API_URL = import.meta.env.VITE_API_URL;
 import "./App.css";
@@ -183,68 +183,88 @@ function App() {
   // AI ASSISTANT
   // =========================
 
-  const sendMessage = async (
-    message?: string
-  ) => {
-    const question =
-      message !== undefined
-        ? message
-        : chatInput.trim();
+  
+const sendMessage = async (
+  message?: string
+) => {
+  const question =
+    message !== undefined
+      ? message.trim()
+      : chatInput.trim();
 
-    if (!question || chatLoading) {
-      return;
+  if (!question || chatLoading) return;
+
+  setChatInput("");
+  setChatError("");
+
+  setChatMessages((previous) => [
+    ...previous,
+    { role: "user", content: question },
+  ]);
+
+  // Instant local replies
+  const normalizedQuestion = question
+    .toLowerCase()
+    .trim()
+    .replace(/[.!?,]/g, "")
+    .replace(/\s+/g, " ");
+
+  let instantReply = "";
+
+  if (/^(hi+|hello+|hey+|good morning|good afternoon|good evening)$/.test(normalizedQuestion)) {
+    instantReply =
+      "Hey! 👋 Welcome to CareerOS. I'm your AI career assistant. I can help you with Java, DSA, projects, interviews and your career roadmap. What would you like to work on today?";
+  } else if (/^(thanks|thank you|thankyou|thx|ty)$/.test(normalizedQuestion)) {
+    instantReply =
+      "You're welcome! 😊 Keep learning and building. I'm here whenever you need help!";
+  } else if (/^(bye|goodbye|see you|see ya|good night)$/.test(normalizedQuestion)) {
+    instantReply =
+      "Goodbye! 👋 Keep moving towards your career goals. See you soon!";
+  }
+
+  if (instantReply) {
+    setChatMessages((previous) => [
+      ...previous,
+      { role: "assistant", content: instantReply },
+    ]);
+    return;
+  }
+
+  // Send other questions to backend
+  setChatLoading(true);
+
+  try {
+    const response = await fetch(
+      API_URL + "/api/ai/chat/1",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
+        body: question,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to get AI response");
     }
 
-    setChatInput("");
-    setChatError("");
+    const data = await response.text();
 
     setChatMessages((previous) => [
       ...previous,
-      {
-        role: "user",
-        content: question,
-      },
+      { role: "assistant", content: data },
     ]);
+  } catch (error) {
+    console.error(error);
+    setChatError(
+      "Unable to connect to the AI assistant. Make sure the backend is running."
+    );
+  } finally {
+    setChatLoading(false);
+  }
+};
 
-    setChatLoading(true);
-
-    try {
-      const response = await fetch(
-        API_URL + "/api/ai/chat/1",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain",
-          },
-          body: question,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          "Failed to get AI response"
-        );
-      }
-
-      const data = await response.text();
-
-      setChatMessages((previous) => [
-        ...previous,
-        {
-          role: "assistant",
-          content: data,
-        },
-      ]);
-    } catch (error) {
-      console.error(error);
-
-      setChatError(
-        "Unable to connect to the AI assistant. Make sure the backend is running."
-      );
-    } finally {
-      setChatLoading(false);
-    }
-  };
 
   const clearChat = () => {
     setChatMessages([]);
